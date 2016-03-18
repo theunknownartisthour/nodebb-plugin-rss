@@ -248,8 +248,7 @@ var async = module.parent.require('async'),
 	function getFeedByYahoo(feedUrl, entriesToPull, callback) {
 		entriesToPull = parseInt(entriesToPull, 10);
 		entriesToPull = entriesToPull ? entriesToPull : 4;
-		var yql = encodeURIComponent('select entry FROM feednormalizer where url=\'' +
-			feedUrl + '\' AND output=\'atom_1.0\' | truncate(count=' + entriesToPull + ')');
+		var yql = encodeURIComponent('select entry FROM feednormalizer where url="' + feedUrl + '" AND output="atom_1.0" | truncate(count=' + entriesToPull + ')');
 		request({
 			url: 'https://query.yahooapis.com/v1/public/yql?q=' + yql + '&format=json',
 			timeout: 120000
@@ -257,6 +256,7 @@ var async = module.parent.require('async'),
 			if (!err && response.statusCode === 200) {
 				try {
 					var p = JSON.parse(body);
+					winston.info('[plugin-rss] body = '+p);
 					if (p.count > 0) {
 						callback(null, p.query.results.feed);
 					} else {
